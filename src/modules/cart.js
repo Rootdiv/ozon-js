@@ -31,18 +31,28 @@ const cart = () => {
     if (target.closest('#cart')) {
       openCart();
     } else if (target.closest('.cart-close')) {
-      closeCart();
+      closeCart(); //Закрытие модального окна корзины по крестику.
     } else if (target.matches('.cart') && !target.closest('.cart-body')) {
-      closeCart();
+      closeCart(); //Закрытие модального окна корзины при клике мимо.
     } else if (!target.closest('.cart-wrapper') && target.classList.contains('btn-primary') &&
         !target.classList.contains('cart-confirm')) {
+      //Добавление в товара корзину.
       const key = +target.closest('.card').dataset.key;
       const goods = JSON.parse(localStorage.getItem('goods'));
       const goodItem = goods.find(item => item.id === key);
-      cart.push(goodItem);
+      if (cart.length === 0) {
+        //Добавляем в корзину первый товар.
+        cart.push(goodItem);
+      } else {
+        if (!cart.find(item => item.id === goodItem.id)) {
+          //Если товара нет в корзине, то добавляем его.
+          cart.push(goodItem);
+        }
+      }
       localStorage.setItem('cart', JSON.stringify(cart));
       counter.textContent = cart.length;
     } else if (target.closest('.cart-wrapper') && target.classList.contains('btn-primary')) {
+      //Удаление товара из корзины.
       const key = +target.closest('.card').dataset.key;
       const index = cart.findIndex(item => item.id === key);
       cart.splice(index, 1);
@@ -50,6 +60,7 @@ const cart = () => {
       renderCart(cart);
       sumCart();
     } else if (target.classList.contains('cart-confirm')) {
+      //Отправка заказа.
       postData(cart).then(() => {
         localStorage.removeItem('cart');
         renderCart([]);
