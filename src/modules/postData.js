@@ -1,4 +1,4 @@
-const postData = cart => fetch('https://jsonplaceholder.typicode.com/posts', {
+const postData = cart => fetch('https://ozon-js-default-rtdb.firebaseio.com/orders.json', {
   method: 'POST',
   body: JSON.stringify(cart),
   headers: {
